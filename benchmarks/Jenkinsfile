@@ -29,7 +29,7 @@ pipeline {
         stage('org.ergoplatform.nodeView.mempool.ErgoMemPoolBenchmark') {
             steps {
                 dir('ergo') {
-                    sh('#######sbt "benchmarks/test:runMain org.ergoplatform.nodeView.mempool.ErgoMemPoolBenchmark"')
+                    sh('########sbt "benchmarks/test:runMain org.ergoplatform.nodeView.mempool.ErgoMemPoolBenchmark"')
                 }
             }
         }
