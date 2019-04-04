@@ -4,9 +4,7 @@ pipeline {
 
         stage('org.ergoplatform.bench.BenchRunner') {
             steps {
-                dir('ergo') {
-                    sh('sbt "benchmarks/test:runMain org.ergoplatform.bench.BenchRunner"')
-                }
+                sh('sbt "benchmarks/test:runMain org.ergoplatform.bench.BenchRunner"')
             }
         }
 
