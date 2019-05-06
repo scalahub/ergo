@@ -5,6 +5,7 @@ import java.io.File
 import cats.Traverse
 import io.iohk.iodb.{ByteArrayWrapper, LSMStore, Store}
 import org.ergoplatform.ErgoBox
+import org.ergoplatform.ErgoBox.R4
 import org.ergoplatform.modifiers.history.{ADProofs, Header}
 import org.ergoplatform.modifiers.mempool.ErgoTransaction
 import org.ergoplatform.modifiers.{ErgoFullBlock, ErgoPersistentModifier}
@@ -20,6 +21,10 @@ import scorex.core.validation.{ModifierValidator, ValidationState}
 import scorex.crypto.authds.avltree.batch._
 import scorex.crypto.authds.{ADDigest, ADValue}
 import scorex.crypto.hash.Digest32
+import sigmastate.Values.SigmaPropConstant
+import sigmastate.basics.DLogProtocol.ProveDlog
+import sigmastate.interpreter.CryptoConstants.EcPointType
+import special.collection.Coll
 
 import scala.util.{Failure, Success, Try}
 
@@ -106,6 +111,11 @@ class UtxoState(override val persistentProver: PersistentBatchAVLProver[Digest32
 
         stateContext.appendFullBlock(fb, votingSettings).flatMap { newStateContext =>
           val inRoot = rootHash
+          val whitelistBox = extractWhitelistBox(fb)
+          val validGenerators = whitelistBox.additionalRegisters(R4)
+          val typedValidGenerators: Coll[EcPointType] = validGenerators.asInstanceOf[Coll[EcPointType]]
+          require(typedValidGenerators.toArray.contains(fb.header.minerPk))
+
 
           val stateTry: Try[UtxoState] = applyTransactions(fb.blockTransactions.txs, fb.header.stateRoot, newStateContext).map { _: Unit =>
             val emissionBox = extractEmissionBox(fb)

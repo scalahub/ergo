@@ -49,6 +49,9 @@ trait UtxoStateReader extends ErgoStateReader with TransactionValidation[ErgoTra
     */
   override def validate(tx: ErgoTransaction): Try[Unit] = validateWithCost(tx, None).map(_ => Unit)
 
+  //
+  protected[state] def extractWhitelistBox(fb: ErgoFullBlock): ErgoBox = ???
+
   /**
     *
     * @param fb - ergo full block

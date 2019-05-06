@@ -141,7 +141,7 @@ object ErgoState extends ScorexLogging {
     */
   private def genesisFoundersBox(settings: ChainSettings): ErgoBox = {
     val emission = settings.emissionRules
-    val pks = settings.foundersPubkeys
+    val pks: Seq[SigmaPropConstant] = settings.foundersPubkeys
       .map(str => groupElemFromBytes(Base16.decode(str).get))
       .map(pk => SigmaPropConstant(ProveDlog(pk)))
     val protection = AtLeast(IntConstant(2), pks)
