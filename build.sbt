@@ -15,20 +15,23 @@ lazy val commonSettings = Seq(
 )
 
 val scorexVersion = "cfa864a9-SNAPSHOT"
-val sigmaStateVersion = "v2.1-b5a50364-SNAPSHOT"
+val sigmaStateVersion = "v2.1-faa53f4b-SNAPSHOT"
+val ergoWalletVersion = "v2.1-cbf411e9-SNAPSHOT"
 // for testing current sigmastate build (see sigmastate-ergo-it jenkins job)
 val effectiveSigmaStateVersion = Option(System.getenv().get("SIGMASTATE_VERSION")).getOrElse(sigmaStateVersion)
 
 libraryDependencies ++= Seq(
   ("org.scorexfoundation" %% "sigma-state" % effectiveSigmaStateVersion)
-    .exclude("ch.qos.logback", "logback-classic")
-    .exclude("org.scorexfoundation", "scrypto"),
+      .exclude("ch.qos.logback", "logback-classic")
+      .exclude("org.scorexfoundation", "scrypto").force(),
+  ("org.ergoplatform" %% "ergo-wallet" % ergoWalletVersion)
+      .exclude("org.scorexfoundation", "sigma-state")
+      .exclude("org.scorexfoundation", "sigma-impl")
+      .exclude("org.scorexfoundation", "sigma-api"),
   "org.scala-lang.modules" %% "scala-async" % "0.9.7",
   ("org.scorexfoundation" %% "avl-iodb" % "0.2.15").exclude("ch.qos.logback", "logback-classic"),
   "org.scorexfoundation" %% "iodb" % "0.3.2",
   ("org.scorexfoundation" %% "scorex-core" % scorexVersion).exclude("ch.qos.logback", "logback-classic"),
-
-  "org.ergoplatform" %% "ergo-wallet" % "0.2-R1-SNAPSHOT",
 
   "javax.xml.bind" % "jaxb-api" % "2.+",
   "com.iheart" %% "ficus" % "1.4.+",
