@@ -6,9 +6,9 @@
 <meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
-<meta name="src" content="pow_overview.tex"> 
-<meta name="date" content="2019-07-21 23:19:00"> 
-<link rel="stylesheet" type="text/css" href="pow_overview.css"> 
+<meta name="src" content="main.tex"> 
+<meta name="date" content="2019-07-27 15:44:00"> 
+<link rel="stylesheet" type="text/css" href="main.css"> 
 </head><body 
 >
    <div class="maketitle">
@@ -53,7 +53,7 @@ class="cmr-9">also discuss ways to &#8220;break&#8221; this pool-resistance and 
    <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
  id="x1-10001"></a>Introduction</h3>
 <!--l. 100--><p class="noindent" >Ergo<span class="footnote-mark"><a 
-href="pow_overview2.html#fn1x0"><sup class="textsuperscript">1</sup></a></span><a 
+href="main2.html#fn1x0"><sup class="textsuperscript">1</sup></a></span><a 
  id="x1-1001f1"></a> 
 is a smart contract platform running on its own blockchain. It provides a
 high-level language called ErgoScript used for writing contracts featuring
@@ -65,12 +65,12 @@ also has some features different from both Bitcoin and Ethereum relating to
 scalability and long-term survivability. For instance, it has a <span 
 class="cmti-10">storage-rent</span>
 component, so that boxes must pay rent to continue staying on the blockchain.
-Secondly, it allows running a fully verifying node on low-power devices using an
-idea called <span 
-class="cmti-10">Non-interactive Proofs-of-proofs of Work</span>&#x00A0;<span class="cite">[<a 
-href="#Xkiayias2017non">1</a>]</span>. Finally, it uses a
+Secondly, it allows running a fully verifying node on low-power devices using the
+idea of partially stateless clients implementation&#x00A0;<span class="cite">[<a 
+href="#XRMCI17">1</a>,&#x00A0;<a 
+href="#XourPaperFull">2</a>]</span>. Finally, it uses a
 PoW algorithm called Autolykos&#x00A0;<span class="cite">[<a 
-href="#Xautolykos">2</a>]</span> that discourages mining-pool formation,
+href="#Xautolykos">3</a>]</span> that discourages mining-pool formation,
 which we informally term <span 
 class="cmti-10">pool-resistance</span>. This article gives an overview of
 Autolykos.
@@ -109,17 +109,17 @@ class="cmmi-10">n</span>.
 class="cmmi-10">b &#x003C; </span>2<sup><span 
 class="cmr-7">256</span></sup>, denoting the
 &#8216;difficulty&#8217;. Let <span 
-class="cmmi-10">F </span>be a hash function taking as input an arbitrary sized array of bits
-and outputting an array of 256 bits (32 bytes). The output of <span 
-class="cmmi-10">F </span>can be considered a
-number between 0 and 2<sup><span 
+class="cmmi-10">H </span>be a collision resistant hash function taking as input an arbitrary
+sized array of bits and outputting an array of 256 bits. The output of <span 
+class="cmmi-10">H </span>can be
+considered a number between 0 and 2<sup><span 
 class="cmr-7">256</span></sup> <span 
 class="cmsy-10">&minus; </span>1. The header <span 
 class="cmmi-10">m</span><span 
 class="cmsy-10">&#x2225;</span><span 
-class="cmmi-10">n </span>is considered a valid solution if
-<span 
-class="cmmi-10">F</span>(<span 
+class="cmmi-10">n </span>is considered a valid
+solution if <span 
+class="cmmi-10">H</span>(<span 
 class="cmmi-10">m</span><span 
 class="cmsy-10">&#x2225;</span><span 
 class="cmmi-10">n</span>) <span 
@@ -130,7 +130,7 @@ class="cmmi-10">n </span>(possibly changing <span
 class="cmmi-10">m </span>as well by
 including new transactions in between tries) until a solution is found. Since the
 output of <span 
-class="cmmi-10">F </span>can be thought of as distributed uniformly in the output space, the
+class="cmmi-10">Hash </span>can be thought of as distributed uniformly in the output space, the
 probability of finding a solution in each try is <span 
 class="cmmi-10">&tau; </span>= <span 
 class="cmmi-10">b&#x2215;</span>2<sup><span 
@@ -156,7 +156,7 @@ class="cmmi-10">.</span>0000000000000000000000257.
 <!--l. 114--><p class="noindent" >
    <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
  id="x1-30003"></a>Mining Pools</h3>
-<!--l. 116--><p class="noindent" >Bitcoin and all other cryptocurrencies allow mining pools, which roughly work as
+<!--l. 116--><p class="noindent" >Bitcoin (and other cryptocurrencies) allows mining pools, which roughly work as
 follows. The pool distributes work, based on a some <span 
 class="cmmi-10">m </span>that it decides. Each miner
 tries to find a solution for the given <span 
@@ -185,8 +185,8 @@ class="cmmi-10">m </span>and
   class="enumerate" id="x1-3004x2"><span 
 class="cmti-10">Level 2 (Censorship resistant): </span>The pool operator does not defines <span 
 class="cmmi-10">m </span>but
-   collects the rewards. This is resistant to sensorship but still carries the risk
-   of losing the rewards. This is what we will try achive for Ergo.
+   collects the rewards. This is resistant to censorship but still carries the risk
+   of losing the rewards. This is what we will try achieve for Ergo.
    </li>
    <li 
   class="enumerate" id="x1-3006x3"><span 
@@ -215,38 +215,57 @@ Ergo:
    <ol  class="enumerate1" >
    <li 
   class="enumerate" id="x1-4002x1"><span 
-class="cmbx-10">Autolykos: </span>The solution contains two additional parameters: a public key
-   <span 
-class="cmmi-10">p </span>(corresponding to some secret key <span 
-class="cmmi-10">s</span>) and a signature on the message <span 
-class="cmmi-10">m</span>
-   (this message is the same as in Bitcoin) that verifies with <span 
+class="cmbx-10">Autolykos: </span>Compared  to  Bitcoin,  the  solution  contains  two  additional
+   parameters:  a  public  key  <span 
+class="cmmi-10">p </span>(corresponding  to  some  secret  key  <span 
+class="cmmi-10">s</span>)  and  a
+   Schnorr signature on the message <span 
+class="cmmi-10">m </span>that verifies with <span 
 class="cmmi-10">p</span>. Because of this
-   signature, secret key <span 
-class="cmmi-10">s </span>is necessary to generate the solution.
-   <!--l. 135--><p class="noindent" >The signature consists of a pair (<span 
+   signature, the secret key <span 
+class="cmmi-10">s </span>is necessary to generate the solution. Note that
+   <span 
+class="cmmi-10">m </span>serves the same purpose as in Bitcoin.
+   <!--l. 135--><p class="noindent" >A Schnorr signature consists of a pair (<span 
 class="cmmi-10">d,w</span>), where <span 
 class="cmmi-10">d </span>is an integer and <span 
-class="cmmi-10">w </span>is a string.
-   The solution is valid if <span 
-class="cmmi-10">d </span>has a certain number of leading zeros. The complete
-   protocol for creating and verifying the solution is called <span 
+class="cmmi-10">w</span>
+   is (the string encoding of) an elliptic curve group element. See Appendix&#x00A0;<a 
+href="#x1-9000A">A<!--tex4ht:ref: schnorr --></a>
+   for details of Schnorr signature scheme.
+   <!--l. 138--><p class="noindent" >The solution is valid if <span 
+class="cmmi-10">d </span>has a certain number of leading zeros. The protocol
+   is called <span 
 class="cmti-10">Autolykos</span>&#x00A0;<span class="cite">[<a 
-href="#Xautolykos">2</a>]</span>.
+href="#Xautolykos">3</a>]</span> and is described in Appendix&#x00A0;<a 
+href="#x1-10000B">B<!--tex4ht:ref: pow --></a>.
    </li>
    <li 
   class="enumerate" id="x1-4004x2"><span 
-class="cmbx-10">Emission contract: </span>The reward transaction must have exactly one output
-   storing the reward (initially 67.5 Ergs), which is protected using the script:
+class="cmbx-10">Emission contract: </span>All ergs that will be ever emitted in rewards are stored
+   in what is called an <span 
+class="cmti-10">emission box</span>, which is a box protected by a script
+   that enforces certain conditions on how the rewards must be collected. In
+                                                                  
+
+                                                                  
+   particular,  it  requires  that  a  reward  transaction  has  exactly  two  output
+   boxes, such that the first is another emission box containing the remaining
+   ergs and the second is a box with the miners reward (initially 67.5 Ergs)
+   protected using the script: <span 
+class="cmti-10">prove knowledge of secret key corresponding to</span>
    <span 
-class="cmti-10">prove knowledge of secret key corresponding to public key </span><span 
-class="cmmi-10">p</span>. Because of this
-   script, secret key <span 
-class="cmmi-10">s </span>is necessary to spend the reward. This is done using
-   something called an <span 
-class="cmti-10">Emission Contract</span>, discussed in Section&#x00A0;<a 
+class="cmti-10">public key </span><span 
+class="cmmi-10">p </span><span 
+class="cmti-10">AND height is greater than or equal to the box-creation height</span>
+   <span 
+class="cmti-10">plus 720</span>. Because of this script, secret key <span 
+class="cmmi-10">s </span>is necessary to spend the reward.
+   Details of the <span 
+class="cmti-10">emission contract</span>, the script of the emission box are given in
+   Section&#x00A0;<a 
 href="#x1-50005">5<!--tex4ht:ref: emission --></a>.</li></ol>
-<!--l. 143--><p class="indent" >   In a nutshell, an Ergo block header is of the form <span 
+<!--l. 145--><p class="indent" >   In a nutshell, an Ergo block header is of the form <span 
 class="cmmi-10">m</span><span 
 class="cmsy-10">&#x2225;</span><span 
 class="cmmi-10">n</span><span 
@@ -256,9 +275,6 @@ class="cmsy-10">&#x2225;</span><span
 class="cmmi-10">w</span><span 
 class="cmsy-10">&#x2225;</span><span 
 class="cmmi-10">d </span>such that:
-                                                                  
-
-                                                                  
    <ol  class="enumerate1" >
    <li 
   class="enumerate" id="x1-4006x1"><span 
@@ -271,73 +287,55 @@ class="cmmi-10">m </span>is created such that the reward is spendable only by th
 class="cmmi-10">p</span>.
    </li>
    <li 
-  class="enumerate" id="x1-4010x3"><span 
-class="cmmi-10">w </span>is a random value needed for verifying the solution.
-   </li>
-   <li 
-  class="enumerate" id="x1-4012x4"><span 
-class="cmmi-10">d </span>is a signature on <span 
-class="cmmi-10">F</span>(<span 
+  class="enumerate" id="x1-4010x3">(<span 
+class="cmmi-10">d,w</span>) is a signature on <span 
 class="cmmi-10">m</span><span 
 class="cmsy-10">&#x2225;</span><span 
 class="cmmi-10">n</span><span 
 class="cmsy-10">&#x2225;</span><span 
 class="cmmi-10">p</span><span 
 class="cmsy-10">&#x2225;</span><span 
-class="cmmi-10">w</span>) that verifies with <span 
+class="cmmi-10">w </span>that verifies with <span 
 class="cmmi-10">p</span>.
    </li>
    <li 
-  class="enumerate" id="x1-4014x5"><span 
+  class="enumerate" id="x1-4012x4"><span 
 class="cmmi-10">d </span><span 
 class="cmsy-10">&le; </span><span 
 class="cmmi-10">b</span>, where <span 
 class="cmmi-10">b </span>serves similar purpose as in Bitcoin.</li></ol>
-<!--l. 152--><p class="indent" >   Observe that given a solution, verifying it is very fast&#x00A0;(see&#x00A0;<span class="cite">[<a 
-href="#Xautolykos">2</a>]</span> for benchmarks). It
-involves 1 computation of <span 
-class="cmmi-10">F </span>and one signature verification.
-<!--l. 155--><p class="indent" >   Because of the nature of the signature scheme used&#x00A0;<span class="cite">[<a 
-href="#Xautolykos">2</a>]</span>, and in particular due to
-the hash function <span 
-class="cmmi-10">F</span>, the value of <span 
-class="cmmi-10">d </span>is uniformly distributed in [0<span 
+<!--l. 153--><p class="indent" >   A correct solution can be checked using one signature verification operation, which
+is designed to be fast (see Appendix&#x00A0;<a 
+href="#x1-12000B.2">B.2<!--tex4ht:ref: verify --></a> for benchmarks).
+<!--l. 156--><p class="indent" >   Because of the nature of the signature scheme used, the value of <span 
+class="cmmi-10">d </span>is almost
+uniformly distributed in [0<span 
 class="cmmi-10">..</span>2<sup><span 
 class="cmr-7">256</span></sup> <span 
-class="cmsy-10">&minus; </span>1].
-The only known approach to find such a <span 
+class="cmsy-10">&minus; </span>1] (see Appendix&#x00A0;<a 
+href="#x1-13000B.3">B.3<!--tex4ht:ref: generating --></a> for details). The only known
+approach to find such a <span 
 class="cmmi-10">d </span>is to try different values of <span 
-class="cmmi-10">n</span>
-(and possibly <span 
-class="cmmi-10">w</span>), compute <span 
-class="cmmi-10">F</span>(<span 
-class="cmmi-10">m</span><span 
-class="cmsy-10">&#x2225;</span><span 
-class="cmmi-10">n</span><span 
-class="cmsy-10">&#x2225;</span><span 
-class="cmmi-10">p</span><span 
-class="cmsy-10">&#x2225;</span><span 
-class="cmmi-10">w</span>), and then check if the resulting <span 
-class="cmmi-10">d </span>is
-less than <span 
+class="cmmi-10">n </span>(and possibly <span 
+class="cmmi-10">w</span>), and then
+check if the resulting <span 
+class="cmmi-10">d </span>is less than <span 
 class="cmmi-10">b</span>. Thus, as in Bitcoin, the probability of <span 
-class="cmmi-10">d </span>being in the correct
-range is <span 
+class="cmmi-10">d </span>being in
+the correct range is approximately <span 
 class="cmmi-10">b&#x2215;</span>2<sup><span 
-class="cmr-7">256</span></sup>, which is the probability of finding the right solution in one
-try.
-<!--l. 158--><p class="indent" >   In Autolykos, special care is taken to ensure that the hash function <span 
-class="cmmi-10">F </span>is <span 
-class="cmti-10">memory</span>
+class="cmr-7">256</span></sup>, which is the probability of finding the right
+solution in one try.
+<!--l. 159--><p class="indent" >   In Autolykos, special care is taken to ensure that finding the right solution is
 <span 
-class="cmti-10">hard</span>, i.e., it requires either too much time or too much memory. It is done by
-constructing the hash function <span 
-class="cmmi-10">F </span>in a specific way to make Autolykos ASIC
+class="cmti-10">memory hard</span>, i.e., it requires either too much time or too much memory. It is
+done by constructing the hash function underlying the signature scheme
+in a specific way. The primary purpose of this is to make Autolykos ASIC
 resistant&#x00A0;<span class="cite">[<a 
-href="#Xautolykos">2</a>]</span>.
+href="#Xautolykos">3</a>]</span>.
    <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
  id="x1-50005"></a>Emission Box</h3>
-<!--l. 163--><p class="noindent" >One of the goals of Ergo was to have a <span 
+<!--l. 164--><p class="noindent" >One of the goals of Ergo was to have a <span 
 class="cmti-10">pool resistant </span>protocol, which informally means
 that pool formation in economically unviable. However, Autolykos alone is not
 sufficient to obtain <span 
@@ -347,11 +345,14 @@ encapsulated in an <span
 class="cmti-10">emission box </span>which has all the (finite amount of) rewards locked
 in. Each miner must spend this box to collect rewards. The contract inside this box
 has the following conditions:
-<!--l. 166--><p class="indent" >
+<!--l. 167--><p class="indent" >
    <ol  class="enumerate1" >
    <li 
   class="enumerate" id="x1-5002x1">The first output of the reward transaction must be another emission box
    with the same script as this and with the remaining ergs after deducting the
+                                                                  
+
+                                                                  
    appropriate reward amount. The reward amount is specified by a formula
    encoded in ErgoScript. After several years when the emission box becomes
    empty, it will be automatically destoyed.
@@ -362,12 +363,13 @@ has the following conditions:
 class="cmti-10">prove knowledge of secret key corresponding</span>
    <span 
 class="cmti-10">to public key </span><span 
-class="cmmi-10">p</span>, where <span 
-class="cmmi-10">p </span>is the public key in the Autolykos solution.</li></ol>
-                                                                  
-
-                                                                  
-<!--l. 172--><p class="indent" >   Thus, any miner wishing to collect rewards from emission must store them in
+class="cmmi-10">p </span><span 
+class="cmti-10">and height </span><span 
+class="cmmi-10">&#x003E; </span><span 
+class="cmti-10">box-creation height + 720</span>, where <span 
+class="cmmi-10">p </span>is the public
+   key in the Autolykos solution.</li></ol>
+<!--l. 173--><p class="indent" >   Thus, any miner wishing to collect rewards from emission must store them in
 another box protected using the public key <span 
 class="cmmi-10">p</span>, whose secret key is needed to generate
 the current solution. What this means is that anyone who has the ability to generate
@@ -375,7 +377,7 @@ a solution also has the ability to collect rewards. Consequently, when the rewar
 becomes permanent (720 blocks later), there will be a race between anyone knowing
 the secret key to grab the rewards. Contrast this with Bitcoin, where the reward may
 be sent to any address.
-<!--l. 174--><p class="indent" >   The key factor that allows pooling in the Bitcoin and other blockchains is the
+<!--l. 175--><p class="indent" >   The key factor that allows pooling in the Bitcoin and other blockchains is the
 ability to send rewards to an address independent of the block solution (to a pool
 address or to all the participants). In Ergo, however, this requires that any operator
 running a pool and wanting the participants to pay the reward to some given address
@@ -385,39 +387,65 @@ class="cmmi-10">s</span>, thereby giving the participants also
 the ability to spend the rewards. We note that there are other approaches to create a
 pool in Ergo that do not require paying to the pools address as discussed
 below.
-<!--l. 179--><p class="noindent" >
+<!--l. 180--><p class="noindent" >
    <h3 class="sectionHead"><span class="titlemark">6   </span> <a 
  id="x1-60006"></a>Creating an Autolykos Mining Pool</h3>
-<!--l. 181--><p class="noindent" >We describe a simple approach to create a mining pool in Ergo. The key observation
+<!--l. 182--><p class="noindent" >We describe a simple approach to create a mining pool in Ergo. The key observation
 is that in a valid share, the reward need not necessarily be sent directly to the pool&#8217;s
 address. What is actually necessary is that an amount equivalent to the reward is sent
 to the pool&#8217;s address. This simple observation allows us to create a pool with the
-following rules.
+following rules:
    <ol  class="enumerate1" >
    <li 
   class="enumerate" id="x1-6002x1">Each miner can send the reward to his own public key <span 
 class="cmmi-10">p</span>, whose secret key
-   only he knows.
+   only he knows (<span 
+class="cmti-10">reward transaction</span>).
    </li>
    <li 
   class="enumerate" id="x1-6004x2">The block must also have another transaction sending the same amount as
-   the reward to the pool address.</li></ol>
-<!--l. 187--><p class="indent" >   A valid share is a solution to a block with the above structure. A pool operator
+   the reward to the pool address (<span 
+class="cmti-10">pool transaction</span>).</li></ol>
+<!--l. 188--><p class="indent" >   A valid share is a solution to a block with the above structure. A pool operator
 collects such shares and any funds thus received are distributed among the miners
 based on the number of shares they submitted.
-<!--l. 189--><p class="indent" >   One drawback of the above method is that each miner must have an equivalent
-amount of ergs to cover the reward amount at any time, even though the reward
-become spendable only after 720 blocks. To overcome this, a pool may provide
-incentives such as allowing the miner to keep a small fraction of the reward (example
-for the current reward of 67.5 ergs, the pool may require only 65 ergs to be sent to
-it).
+<!--l. 190--><p class="indent" >   One drawback of the above method is that each miner must have an
+equivalent amount of ergs to cover the reward amount at any time, even
+                                                                  
+
+                                                                  
+though the reward become spendable only after 720 blocks. To overcome
+this, a pool may provide incentives such as allowing the miner to keep a
+small fraction of the reward (example for the current reward of 67.5 ergs, the
+pool may require only 65 ergs to be sent to it). A pool transaction can pay
+to any pool defined address. For instance, it could be a P2SH address of
+<span 
+class="cmtt-10">poolPubKey</span>.
+<!--l. 192--><p class="indent" >   <span 
+class="cmbx-10">Securing the pool transaction: </span>Let Alice be a miner with public key <span 
+class="cmmi-10">alice</span>. If
+such a system is used in, say Bitcoin, then the system becomes insecure.
+Once the pool-paying transaction is publicized, anyone (not necessarily Alice)
+may use it as their pool transaction. However, ErgoScript allows us to use
+the block solution in the context, which we can use to solve the problem as
+follows. Instead of paying to the pool from an arbitrary box (or boxes), Alice
+will instead store these funds in a special box protected by the following
+script:
+                                                                  
+
+                                                                  
+   <div class="verbatim" id="verbatim-1">
+minerPubKey&#x00A0;==&#x00A0;alice&#x00A0;||&#x00A0;proveDlog(bob)
+</div>
+<!--l. 196--><p class="nopar" > The first part ensures that when used to fund the pool output, the miner must be
+Alice. The second ensures that the coins are not stuck till Alice finds a block
+(if ever). Here <span 
+class="cmtt-10">bob </span>is a public key owned by Alice or someone loaning the
+funds.
 <!--l. 1--><p class="noindent" >
    <h3 class="likesectionHead"><a 
  id="x1-70006"></a>References</h3>
 <!--l. 1--><p class="noindent" >
-                                                                  
-
-                                                                  
   <div class="thebibliography">
   <p class="bibitem" ><span class="biblabel">
 <span 
@@ -425,14 +453,38 @@ class="cmr-9">1.</span> <span class="bibsp"><span
 class="cmr-9">&#x00A0;</span><span 
 class="cmr-9">&#x00A0;</span><span 
 class="cmr-9">&#x00A0;</span></span></span><a 
- id="Xkiayias2017non"></a><span 
-class="cmr-9">Aggelos Kiayias, Andrew Miller, and Dionysis Zindros.  Non-interactive proofs</span>
+ id="XRMCI17"></a><span 
+class="cmr-9">Leonid       Reyzin,       Dmitry       Meshkov,       Alexander       Chepurnoy,</span>
   <span 
-class="cmr-9">of proof-of-work.</span>
+class="cmr-9">and Sasha Ivanov. Improving authenticated dynamic dictionaries, with applications</span>
+  <span 
+class="cmr-9">to cryptocurrencies.  In Aggelos Kiayias, editor, </span><span 
+class="cmti-9">Financial Cryptography and Data</span>
+  <span 
+class="cmti-9">Security</span><span 
+class="cmr-9">, pages 376&#8211;392, Cham, 2017. Springer International Publishing.</span>
   </p>
   <p class="bibitem" ><span class="biblabel">
 <span 
 class="cmr-9">2.</span> <span class="bibsp"><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span></span></span><a 
+ id="XourPaperFull"></a><span 
+class="cmr-9">Leonid       Reyzin,       Dmitry       Meshkov,       Alexander       Chepurnoy,</span>
+  <span 
+class="cmr-9">and Sasha Ivanov. Improving authenticated dynamic dictionaries, with applications</span>
+  <span 
+class="cmr-9">to cryptocurrencies. Technical Report 2016/994, IACR Cryptology ePrint Archive,</span>
+  <span 
+class="cmr-9">2016. </span><a 
+href="http://eprint.iacr.org/2016/994" class="url" ><span 
+class="cmtt-9">http://eprint.iacr.org/2016/994</span></a><span 
+class="cmr-9">.</span>
+  </p>
+  <p class="bibitem" ><span class="biblabel">
+<span 
+class="cmr-9">3.</span> <span class="bibsp"><span 
 class="cmr-9">&#x00A0;</span><span 
 class="cmr-9">&#x00A0;</span><span 
 class="cmr-9">&#x00A0;</span></span></span><a 
@@ -442,8 +494,825 @@ class="cmr-9">Autolykos:           The           ergo           platform        
 href="https://docs.ergoplatform.com/ErgoPow.pdf" class="url" ><span 
 class="cmtt-9">https://docs.ergoplatform.com/ErgoPow.pdf</span></a><span 
 class="cmr-9">, 03 2019.</span>
+  </p>
+  <p class="bibitem" ><span class="biblabel">
+<span 
+class="cmr-9">4.</span> <span class="bibsp"><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span></span></span><a 
+ id="Xfiatshamir"></a><span 
+class="cmr-9">Amos  Fiat  and  Adi  Shamir.   How  to  prove  yourself:  Practical  solutions  to</span>
+  <span 
+class="cmr-9">identification and signature problems.  In Andrew</span><span 
+class="cmr-9">&#x00A0;M. Odlyzko, editor, </span><span 
+class="cmti-9">Advances</span>
+  <span 
+class="cmti-9">in Cryptology &#8212; CRYPTO&#8217; 86</span><span 
+class="cmr-9">, pages 186&#8211;194, Berlin, Heidelberg, 1987. Springer</span>
+  <span 
+class="cmr-9">Berlin Heidelberg.</span>
+  </p>
+  <p class="bibitem" ><span class="biblabel">
+<span 
+class="cmr-9">5.</span> <span class="bibsp"><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span></span></span><a 
+ id="Xrfc7693"></a><span 
+class="cmr-9">Markku-Juhani</span><span 
+class="cmr-9">&#x00A0;O.  Saarinen  and  Jean-Philippe  Aumasson.    The  BLAKE2</span>
+  <span 
+class="cmr-9">Cryptographic  Hash  and  Message  Authentication  Code  (MAC).    RFC  7693,</span>
+  <span 
+class="cmr-9">November 2015.</span>
+  </p>
+  <p class="bibitem" ><span class="biblabel">
+<span 
+class="cmr-9">6.</span> <span class="bibsp"><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span><span 
+class="cmr-9">&#x00A0;</span></span></span><a 
+ id="Ximpl"></a><span 
+class="cmr-9">Implementation    of    authenticated    data    structures    within    scorex.</span>
+  <a 
+href="https://github.com/input-output-hk/scrypto/" class="url" ><span 
+class="cmtt-9">https://github.com/input-_output-_hk/scrypto/</span></a><span 
+class="cmr-9">.</span>
 </p>
   </div>
+                                                                  
+
+                                                                  
+<!--l. 203--><p class="noindent" >
+   <h3 class="likesectionHead"><a 
+ id="x1-80006"></a>Appendix</h3>
+<!--l. 204--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">A   </span> <a 
+ id="x1-9000A"></a>Schnorr Identification</h3>
+<!--l. 206--><p class="noindent" >Autolykos is based on Schnorr identification, which we describe first. Let <span 
+class="cmmi-10">G </span>be a
+cyclic group of prime order <span 
+class="cmmi-10">q </span>such that computing discrete logarithms in <span 
+class="cmmi-10">G </span>is hard
+and let <span 
+class="cmmi-10">g </span>be a public generator of <span 
+class="cmmi-10">G</span>.
+<!--l. 209--><p class="indent" >   The following 3-step protocol is used to prove knowledge of some secret <span 
+class="cmmi-10">x </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub>
+corresponding to public <span 
+class="cmmi-10">w </span>= <span 
+class="cmmi-10">g</span><sup><span 
+class="cmmi-7">x</span></sup> <span 
+class="cmsy-10">&isin; </span><span 
+class="cmmi-10">G</span>.
+<!--l. 211--><p class="indent" >
+   <ol  class="enumerate1" >
+   <li 
+  class="enumerate" id="x1-9002x1">(Commitment) Prover selects random <span 
+class="cmmi-10">s </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> and sends <span 
+class="cmmi-10">p </span>= <span 
+class="cmmi-10">g</span><sup><span 
+class="cmmi-7">s</span></sup> to verifier.
+   </li>
+   <li 
+  class="enumerate" id="x1-9004x2">(Challenge) The verifier selects random <span 
+class="cmmi-10">r </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> and sends it to prover.
+   </li>
+   <li 
+  class="enumerate" id="x1-9006x3">(Response) The prover computes <span 
+class="cmmi-10">d </span>= <span 
+class="cmmi-10">xr </span><span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">s</span> mod <span 
+class="cmmi-10">q </span>and sends <span 
+class="cmmi-10">d </span>to verifier
+   <!--l. 216--><p class="noindent" >The verifier accepts if <span 
+class="cmmi-10">pg</span><sup><span 
+class="cmmi-7">d</span></sup> = <span 
+class="cmmi-10">w</span><sup><span 
+class="cmmi-7">r</span></sup>.
+   </li></ol>
+<!--l. 220--><p class="indent" >   The above is a proof of knowledge because we can construct an extractor
+for <span 
+class="cmmi-10">x </span>if we can reset the prover and obtain the same commitment <span 
+class="cmmi-10">w </span>(and
+thus, <span 
+class="cmmi-10">s</span>) twice. Then <span 
+class="cmmi-10">d</span><sub><span 
+class="cmr-7">1</span></sub> = <span 
+class="cmmi-10">x</span><sub><span 
+class="cmr-7">1</span></sub> <span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">s </span>and <span 
+class="cmmi-10">d</span><sub><span 
+class="cmr-7">2</span></sub> = <span 
+class="cmmi-10">xr</span><sub><span 
+class="cmr-7">2</span></sub> <span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">s </span>with <span 
+class="cmmi-10">r</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">&ne;</span><span 
+class="cmmi-10">r</span><sub><span 
+class="cmr-7">2</span></sub> will reveal
+(<span 
+class="cmmi-10">x,s</span>).
+<!--l. 222--><p class="indent" >   <span 
+class="cmbx-10">Schnorr Signatures: </span>Schnorr identification can be converted into a signature
+scheme keeping <span 
+class="cmmi-10">w </span>as the public key and <span 
+class="cmmi-10">x </span>as the private key. The idea is to make the
+the above protocol non-interactive by applying the Fiat-Shamir transform&#x00A0;<span class="cite">[<a 
+href="#Xfiatshamir">4</a>]</span>,
+where the role of the verifier is replaced by a collision resistant hash function
+<span 
+class="cmmi-10">F </span>: <span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup><span 
+class="cmsy-10">&#x00D7;</span><span 
+class="cmmi-10">G</span><span 
+class="cmsy-10">&#x00D7;</span><span 
+class="cmmi-10">G</span><img 
+src="main0x.png" alt="&#x21A6;&rarr;"  class="mapsto" ><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> and the challenge is computed as <span 
+class="cmmi-10">r </span>= <span 
+class="cmmi-10">F</span>(<span 
+class="cmmi-10">m,w,p</span>) for message
+<span 
+class="cmmi-10">m </span>to be signed. Then (<span 
+class="cmmi-10">p,d</span>) is a signature on the (public-key, message) pair
+(<span 
+class="cmmi-10">w,m</span>). In the above signature scheme, it is important that <span 
+class="cmmi-10">p </span>(and thus, <span 
+class="cmmi-10">x</span>)
+be never reused for two different messages due to the extractor described
+above.
+<!--l. 229--><p class="indent" >   Since a signature is non-interactive, we can swap the roles of the public key and
+the commitment, so that (<span 
+class="cmmi-10">w,d</span>) can be regarded as a signature for the (public-key,
+message) pair (<span 
+class="cmmi-10">p,m</span>), with the requirement that <span 
+class="cmmi-10">w </span>should never be reused for two
+different messages. This is what Autolykos uses; <span 
+class="cmmi-10">s </span>is the miner&#8217;s secret key and <span 
+class="cmmi-10">p </span>= <span 
+class="cmmi-10">g</span><sup><span 
+class="cmmi-7">s</span></sup>
+is the corresponding public key.
+<!--l. 236--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">B   </span> <a 
+ id="x1-10000B"></a>Autolykos</h3>
+<!--l. 239--><p class="noindent" >The following is essentially reproduced from&#x00A0;<span class="cite">[<a 
+href="#Xautolykos">3</a>]</span> with the only change that the
+<span 
+class="cmti-10">genIndices </span>method of&#x00A0;<span class="cite">[<a 
+href="#Xautolykos">3</a>]</span> is renamed to <span 
+class="cmmi-10">I </span>for brevity.
+                                                                  
+
+                                                                  
+<!--l. 241--><p class="indent" >   Autolykos&#x00A0;<span class="cite">[<a 
+href="#Xautolykos">3</a>]</span> is defined using public parameters (<span 
+class="cmmi-10">k,N,H,I,b,M</span>) where:
+<!--l. 243--><p class="indent" >
+   <ol  class="enumerate1" >
+   <li 
+  class="enumerate" id="x1-10002x1">Integer <span 
+class="cmmi-10">k </span>represents the number of solutions.
+   </li>
+   <li 
+  class="enumerate" id="x1-10004x2">Integer <span 
+class="cmmi-10">N </span>represents the number of elements of <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> to be stored in memory.
+   </li>
+   <li 
+  class="enumerate" id="x1-10006x3">Hash function <span 
+class="cmmi-10">H </span>: <span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup><img 
+src="main1x.png" alt="&#x21A6;&rarr;"  class="mapsto" ><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub>.
+   </li>
+   <li 
+  class="enumerate" id="x1-10008x4">Hash function <span 
+class="cmmi-10">I </span>: <span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup><img 
+src="main2x.png" alt="&#x21A6;&rarr;"  class="mapsto" ><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">N</span></sub><sup><span 
+class="cmmi-7">k</span></sup> generates <span 
+class="cmmi-10">k </span>indices, each within [0<span 
+class="cmmi-10">..N </span><span 
+class="cmsy-10">&minus; </span>1].
+   </li>
+   <li 
+  class="enumerate" id="x1-10010x5">A difficulty parameter <span 
+class="cmmi-10">b </span>calculated via difficulty adjustment.
+   </li>
+   <li 
+  class="enumerate" id="x1-10012x6">A constant message <span 
+class="cmmi-10">M </span><span 
+class="cmsy-10">&isin;{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmmi-7">&#x2113;</span></sup> used to enlarge input and increase time.</li></ol>
+<!--l. 252--><p class="indent" >   The parameters <span 
+class="cmmi-10">G,g </span>are the same as in the Secp256k1 standard of Bitcoin. The
+remaining parameters are: <span 
+class="cmmi-10">k </span>= 32 and <span 
+class="cmmi-10">N </span>= 2<sup><span 
+class="cmr-7">26</span></sup>. The hash functions <span 
+class="cmmi-10">H,I </span>are derived
+from Blake2b256&#x00A0;<span class="cite">[<a 
+href="#Xrfc7693">5</a>]</span> and explained in&#x00A0;<span class="cite">[<a 
+href="#Xautolykos">3</a>]</span>. The message <span 
+class="cmmi-10">M </span>is computed in Scala as <span 
+class="cmtt-10">0</span>
+<span 
+class="cmtt-10">to 1023 flatMap (toByteArray)</span>, where <span 
+class="cmtt-10">toByteArray </span>converts a <span 
+class="cmtt-10">Long </span>type to an
+array of 8 bytes (i.e., 64 bits). Thus, <span 
+class="cmmi-10">&#x2113; </span>= 65536.
+<!--l. 255--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">B.1   </span> <a 
+ id="x1-11000B.1"></a>Defining a Solution</h4>
+<!--l. 257--><p class="noindent" >A solution is a tuple (<span 
+class="cmmi-10">m,n,d,w,p</span>) <span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmr-7">2</span><sup><span 
+class="cmr-5">256</span></sup></sub> <span 
+class="cmsy-10">&#x00D7; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmr-7">2</span><sup><span 
+class="cmr-5">64</span></sup></sub> <span 
+class="cmsy-10">&#x00D7; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> <span 
+class="cmsy-10">&#x00D7; </span><span 
+class="cmmi-10">G </span><span 
+class="cmsy-10">&#x00D7; </span><span 
+class="cmmi-10">G </span>s.t:
+   <ol  class="enumerate1" >
+   <li 
+  class="enumerate" id="x1-11002x1"><span 
+class="cmmi-10">d </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">b</span>, where <span 
+class="cmmi-10">b </span>is the difficulty parameter discussed above.
+   </li>
+   <li 
+  class="enumerate" id="x1-11004x2">The following algorithm yields true (signature verification):
+      <ol  class="enumerate2" >
+      <li 
+  class="enumerate" id="x1-11006x1">Compute (<span 
+class="cmmi-10">a</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,a</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">,</span><span 
+class="cmmi-10">&hellip;</span><span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">k</span></sub>) = <span 
+class="cmmi-10">I</span>(<span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">n</span>).
+      </li>
+      <li 
+  class="enumerate" id="x1-11008x2">Compute <span 
+class="cmmi-10">r </span>= <span 
+class="cmex-10">&sum;</span>
+  <sub><span 
+class="cmmi-7">j</span><span 
+class="cmr-7">=1</span></sub><sup><span 
+class="cmmi-7">k</span></sup><span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">M</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">p</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">w</span>).
+      </li>
+      <li 
+  class="enumerate" id="x1-11010x3">Return true if and only if the following holds:
+      <table 
+class="equation"><tr><td><a 
+ id="x1-11011r1"></a>
+      <center class="math-display" >
+      <img 
+src="main3x.png" alt=" d    r
+pg  = w
+      " class="math-display" ></center></td><td class="equation-label">(1)</td></tr></table>
+      <!--l. 268--><p class="nopar" >
+      </li></ol>
+   </li></ol>
+<!--l. 272--><p class="indent" >   In addition to <span 
+class="cmmi-10">m</span>, which is the payload, the solution consists of two public
+keys from <span 
+class="cmmi-10">G </span>(of 32 bytes each), the signature <span 
+class="cmmi-10">d </span>of 32 bytes (which contains
+several leading zeros) and a nonce of 8 bytes, giving a total of at most 104
+bytes.
+<!--l. 274--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">B.2   </span> <a 
+ id="x1-12000B.2"></a>Verification Time</h4>
+<!--l. 277--><p class="noindent" >The verification of a solution essentially follows the same algorithm used to define the
+solution. In particular, it requires the following computation:
+   <ul class="itemize1">
+   <li class="itemize">1 application of <span 
+class="cmmi-10">I</span>.
+   </li>
+   <li class="itemize"><span 
+class="cmmi-10">k </span>applications of <span 
+class="cmmi-10">H</span>.
+   </li>
+   <li class="itemize">Two exponentiations and 1 multiplication in <span 
+class="cmmi-10">G</span>.</li></ul>
+<!--l. 283--><p class="noindent" >In our tests this took less than 2 ms on an Intel Core i5-7200U, 2.5GHz processor.
+<!--l. 285--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">B.3   </span> <a 
+ id="x1-13000B.3"></a>Proving (or Finding a Solution)</h4>
+<!--l. 288--><p class="noindent" >Here we discuss how to find a solution. Let <span 
+class="cmmi-10">s </span>be the miner&#8217;s private key and <span 
+class="cmmi-10">p </span>= <span 
+class="cmmi-10">g</span><sup><span 
+class="cmmi-7">s</span></sup> be
+the corresponding public key used in the solution (<span 
+class="cmmi-10">m,n,d,w,p</span>) for a block
+whose header hashes to <span 
+class="cmmi-10">m</span>. To generate the remaining parameters <span 
+class="cmmi-10">n,d,w</span>, the
+miner performs the following procedure. The process essentially involves
+first fixing a random <span 
+class="cmmi-10">w </span>and then repeatedly trying different values of <span 
+class="cmmi-10">n </span>to
+compute <span 
+class="cmmi-10">d </span>(until the correct <span 
+class="cmmi-10">d </span>is found). If the difficulty becomes so high
+that all 2<sup><span 
+class="cmr-7">64</span></sup> values of <span 
+class="cmmi-10">n </span>are insufficient to get a solution then <span 
+class="cmmi-10">w </span>can also be
+varied.
+   <h5 class="subsubsectionHead"><a 
+ id="x1-14000B.3"></a>Generating a Solution</h5>
+<!--l. 293--><p class="noindent" >The miner generates a random secret <span 
+class="cmmi-10">x </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> and sets <span 
+class="cmmi-10">w </span>= <span 
+class="cmmi-10">g</span><sup><span 
+class="cmmi-7">x</span></sup> <span 
+class="cmsy-10">&isin; </span><span 
+class="cmmi-10">G </span>and proceeds with
+the non-interactive Schnorr identification protocol with the roles of commitments and
+public keys reversed. The part that makes Autolykos memory-hard is the way <span 
+class="cmmi-10">F </span>is
+implemented.
+                                                                  
+
+                                                                  
+<!--l. 296--><p class="indent" >   The goal is to find a nonce <span 
+class="cmmi-10">n </span><span 
+class="cmsy-10">&isin;{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup> and a solution <span 
+class="cmmi-10">d </span>that results in <span 
+class="cmsy-10">&minus;</span><span 
+class="cmmi-10">b </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">d </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">b</span>,
+obtained using the following algorithm:
+<!--l. 298--><p class="indent" >
+   <ol  class="enumerate1" >
+   <li 
+  class="enumerate" id="x1-14002x1">Generate random <span 
+class="cmmi-10">n </span><span 
+class="cmsy-10">&isin;{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup>.
+   </li>
+   <li 
+  class="enumerate" id="x1-14004x2">Compute (<span 
+class="cmmi-10">a</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,a</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">,</span><span 
+class="cmmi-10">&hellip;</span><span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">k</span></sub>) = <span 
+class="cmmi-10">I</span>(<span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">n</span>), a list of <span 
+class="cmmi-10">k </span>elements from <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">N</span></sub>.
+   </li>
+   <li 
+  class="enumerate" id="x1-14006x3">Compute <span 
+class="cmmi-10">r </span>= <span 
+class="cmex-10">&sum;</span>
+  <sub><span 
+class="cmmi-7">j</span><span 
+class="cmr-7">=1</span></sub><sup><span 
+class="cmmi-7">k</span></sup><span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">M</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">p</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">w</span>), where the addition is in <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub>.
+   </li>
+   <li 
+  class="enumerate" id="x1-14008x4">Compute <span 
+class="cmmi-10">d </span>= <span 
+class="cmmi-10">xr </span><span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">s</span>, where the multiplication is in <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> and addition in <span 
+class="msbm-10">&#x2124;</span>.
+   </li>
+   <li 
+  class="enumerate" id="x1-14010x5">If <span 
+class="cmsy-10">&minus;</span><span 
+class="cmmi-10">b </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">d </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">b </span>then return (<span 
+class="cmmi-10">d,n</span>) else go to Step 1.</li></ol>
+<!--l. 307--><p class="indent" >   The complete solution is given by (<span 
+class="cmmi-10">m,p,w,n,d</span>).
+<!--l. 309--><p class="indent" >   To get to such a solution, a miner must perform the following computation
+repeatedly (Steps 2-5):
+   <ul class="itemize1">
+   <li class="itemize">One invocation of <span 
+class="cmmi-10">I </span>(Step 2).
+   </li>
+   <li class="itemize"><span 
+class="cmmi-10">k </span>invocations of <span 
+class="cmmi-10">H </span>(Step 3).
+   </li>
+   <li class="itemize">One addition and multiplication in <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> (Step 4).
+   </li></ul>
+<!--l. 317--><p class="indent" >   <span 
+class="cmbx-10">Distrbution of </span><span 
+class="cmmi-10">d</span><span 
+class="cmbx-10">: </span>The hash function <span 
+class="cmmi-10">H </span>is constructed using another hash
+function <span 
+class="cmmi-10">H</span><span 
+class="cmsy-10">&prime; </span>: <span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmsy-7">&lowast;</span></sup><img 
+src="main4x.png" alt="&#x21A6;&rarr;"  class="mapsto" ><span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmr-7">256</span></sup> and then computing <span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">x</span>) = <span 
+class="cmmi-10">H</span><span 
+class="cmsy-10">&prime;</span>(<span 
+class="cmmi-10">x</span>) mod <span 
+class="cmmi-10">q</span>. If <span 
+class="cmmi-10">H</span><span 
+class="cmsy-10">&prime;</span>
+behaves like a random oracle, then so does <span 
+class="cmmi-10">H </span>and the value of <span 
+class="cmmi-10">d </span>is uniformly
+distributed in <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub>.
+<!--l. 319--><p class="indent" >   For our implementation (Secp256k1), <span 
+class="cmmi-10">q </span>= 2<sup><span 
+class="cmr-7">256</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">32</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">9</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">8</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">7</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">6</span></sup> <span 
+class="cmsy-10">&minus; </span>2<sup><span 
+class="cmr-7">4</span></sup> <span 
+class="cmsy-10">&minus; </span>1.
+Thus, the probability of a random 256-bit integer not falling in <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">q</span></sub> is less than
+<span 
+class="cmsy-10">&asymp; </span>2<sup><span 
+class="cmsy-7">&minus;</span><span 
+class="cmr-7">223</span><span 
+class="cmmi-7">.</span><span 
+class="cmr-7">9999</span></sup> <span 
+class="cmsy-10">&asymp; </span>10<sup><span 
+class="cmsy-7">&minus;</span><span 
+class="cmr-7">67</span></sup>. Thus, for all practical purposes, <span 
+class="cmmi-10">d </span>can be thought of as being
+uniformly distributed in <span 
+class="cmsy-10">{</span>0<span 
+class="cmmi-10">,</span>1<span 
+class="cmsy-10">}</span><sup><span 
+class="cmr-7">256</span></sup>.
+<!--l. 321--><p class="indent" >   <span 
+class="cmbx-10">Optimization 1 (Precomputing </span><span 
+class="cmmi-10">H </span><span 
+class="cmbx-10">for each block): </span>Assume that
+the miner must perform the above operations <span 
+class="cmmi-10">&alpha; </span>times before getting to a
+solution. This results in a total of <span 
+class="cmmi-10">&alpha;k </span>invocations of <span 
+class="cmmi-10">H</span>. We know that each <span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub>
+above is from <span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">N</span></sub>. Thus, there can only be <span 
+class="cmmi-10">N </span>different values of <span 
+class="cmmi-10">H </span>in Step
+3.
+<!--l. 325--><p class="indent" >   If <span 
+class="cmmi-10">&alpha;k </span><span 
+class="cmsy-10">&#x226B; </span><span 
+class="cmmi-10">N</span>, then it makes sense to precompute <span 
+class="cmmi-10">H </span>once for all possible values of <span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub>
+and store that list <span 
+class="cmmi-10">R </span>in memory for further use (instead of computing <span 
+class="cmmi-10">H </span>on the fly for
+different values of <span 
+class="cmmi-10">n</span>). That is, we store (<span 
+class="cmmi-10">r</span><sub><span 
+class="cmr-7">0</span></sub><span 
+class="cmmi-10">,r</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,</span><span 
+class="cmmi-10">&hellip;</span><span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">N</span><span 
+class="cmsy-7">&minus;</span><span 
+class="cmr-7">1</span></sub>), where <span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">i</span></sub> = <span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">i</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">M</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">p</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">w</span>)
+for <span 
+class="cmmi-10">i </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">N</span></sub>. Step 3 can then be rewritten as <span 
+class="cmmi-10">r </span>= <span 
+class="cmex-10">&sum;</span>
+  <sub><span 
+class="cmmi-7">j</span><span 
+class="cmr-7">=1</span></sub><sup><span 
+class="cmmi-7">k</span></sup><span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">a</span><sub><span 
+class="cmmi-5">j</span></sub></sub>. This is more efficient
+assuming that memory lookup is much faster than hash computation and that the
+number of hashes to be computed is much larger than <span 
+class="cmmi-10">N</span>. This turns out to
+be true in our implementation. Since each <span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">i</span></sub> occupies 32 bytes, the space
+                                                                  
+
+                                                                  
+needed for keeping the entire list <span 
+class="cmmi-10">R </span>= (<span 
+class="cmmi-10">r</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,r</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">&hellip;</span><span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">N</span></sub>) in memory is 32<span 
+class="cmmi-10">N </span>bytes or
+2Gb.
+<!--l. 330--><p class="indent" >   Without this optimization, a miner must compute the elements <span 
+class="cmmi-10">r</span><sub><span 
+class="cmmi-7">a</span><sub><span 
+class="cmmi-5">j</span></sub></sub> on the fly.
+However, in doing so, the number of calls to <span 
+class="cmmi-10">H </span>will significantly increase.
+As an example, if the GPU can perform <span 
+class="cmmi-10">h </span>= 2<sup><span 
+class="cmr-7">30</span></sup> hashes a second&#x00A0;<span class="cite">[<span 
+class="cmbx-10">?</span>]</span> and
+the block interval <span 
+class="cmmi-10">t </span>is 120 seconds, then every element in <span 
+class="cmmi-10">R </span>will be hashed
+approximately <span 
+class="cmmi-10">hkt&#x2215;N </span>= 3 <span 
+class="cmsy-10">&#x00D7; </span>10<sup><span 
+class="cmr-7">4</span></sup> times on average, which will reduce efficiency and
+profit.
+<!--l. 332--><p class="indent" >   <span 
+class="cmbx-10">Optimization 2 (Precomputing one-time prehashes): </span>Since the list <span 
+class="cmmi-10">R </span>is
+quite large, filling it consumes a lot of time. Our initial tests&#x00A0;<span class="cite">[<a 
+href="#Ximpl">6</a>]</span> needed 25 seconds on
+Nvidia GTX-1070. This must be done for each block. However, because of the way
+stream ciphers work, we could store a list of unfinalized hashes <span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">i</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">M</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">p</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">&hellip;</span>)
+for <span 
+class="cmmi-10">i </span><span 
+class="cmsy-10">&isin; </span><span 
+class="msbm-10">&#x2124;</span><sub><span 
+class="cmmi-7">N</span></sub> (this consumes approximately 5Gb additional memory). In this
+case, the work to compute the unfinalized hashes would be done only once
+during miner initialization and computing <span 
+class="cmmi-10">R </span>for each block would consume
+only a few milliseconds to finalize the hashes (about 50 ms in our tests with
+GTX-1070).
+<!--l. 338--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">B.4   </span> <a 
+ id="x1-15000B.4"></a>Discussion</h4>
+<!--l. 341--><p class="noindent" >The above solution is equivalent to the original Schnorr signature of Section&#x00A0;<a 
+href="#x1-9000A">A<!--tex4ht:ref: schnorr --></a> with a
+change of variable names. Note that the sizes of nonce <span 
+class="cmmi-10">n </span>and message <span 
+class="cmmi-10">m </span>is fixed, so
+<span 
+class="cmmi-10">I</span>(<span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">n</span>) is equivalent to another hash function <span 
+class="cmmi-10">I</span><span 
+class="cmsy-10">&prime;</span>(<span 
+class="cmmi-10">m,n</span>). Let <span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&prime;</span> = (<span 
+class="cmmi-10">m,n</span>). The
+signature is computed on <span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&prime;</span> with <span 
+class="cmmi-10">r </span>= <span 
+class="cmmi-10">F</span>(<span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&prime;</span><span 
+class="cmmi-10">,w,p</span>) = <span 
+class="cmex-10">&sum;</span>
+  <sub><span 
+class="cmmi-7">j</span><span 
+class="cmr-7">=1</span></sub><sup><span 
+class="cmmi-7">k</span></sup><span 
+class="cmmi-10">H</span>(<span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">M</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">p</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&#x2225;</span><span 
+class="cmmi-10">w</span>), where
+<span 
+class="cmmi-10">a</span><sub><span 
+class="cmmi-7">j</span></sub> is the <span 
+class="cmmi-10">j</span><sup><span 
+class="cmr-5">th</span></sup> element of <span 
+class="cmmi-10">I</span><span 
+class="cmsy-10">&prime;</span>(<span 
+class="cmmi-10">m,n</span>).
+<!--l. 346--><p class="indent" >   Using Equation&#x00A0;<a 
+href="#x1-11011r1">1<!--tex4ht:ref: verif --></a> and replacing <span 
+class="cmmi-10">m</span><span 
+class="cmsy-10">&prime;</span> by <span 
+class="cmmi-10">m,n</span>, we can rewrite this as
+   <table 
+class="equation"><tr><td><a 
+ id="x1-15001r2"></a>
+   <center class="math-display" >
+<img 
+src="main5x.png" alt="             r &minus;d
+r = F (m, n,w,w g )
+" class="math-display" ></center></td><td class="equation-label">(2)</td></tr></table>
+<!--l. 349--><p class="nopar" >
+Solving the puzzle requires trying different nonces <span 
+class="cmmi-10">n </span>and group elements <span 
+class="cmmi-10">w </span>till we get
+a signature satisfying <span 
+class="cmsy-10">&minus;</span><span 
+class="cmmi-10">b </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">d </span><span 
+class="cmsy-10">&le; </span><span 
+class="cmmi-10">b</span>. Security follows if we assume that Schnorr
+signatures are unforgeable. Outsourcing the puzzle is equivalent to outsourcing the
+signature creating algorithm. The only difference from conventional Schnorr signature
+                                                                  
+
+                                                                  
+scheme of Section&#x00A0;<a 
+href="#x1-9000A">A<!--tex4ht:ref: schnorr --></a> is in the design of function <span 
+class="cmmi-10">F</span>. In particular, it is constructed in a
+way that efficient massive evaluation with different nonces requires allocating a large
+amount of memory, while a single evaluation on the verifier&#8217;s side can be done on the
+fly.
+   <h5 class="subsubsectionHead"><a 
+ id="x1-16000B.4"></a>Security</h5>
+<!--l. 354--><p class="noindent" >The same <span 
+class="cmmi-10">w </span>(and thus, <span 
+class="cmmi-10">x</span>) should never be reused, otherwise this will leak the
+secret <span 
+class="cmmi-10">s </span>as follows. Let <span 
+class="cmmi-10">d </span>= <span 
+class="cmmi-10">xr </span><span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">s </span>and <span 
+class="cmmi-10">d</span><span 
+class="cmsy-10">&prime; </span>= <span 
+class="cmmi-10">xr</span><span 
+class="cmsy-10">&prime;&minus; </span><span 
+class="cmmi-10">s </span>be two solutions. Then
+<span 
+class="cmmi-10">x </span>= (<span 
+class="cmmi-10">d </span><span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">d</span><span 
+class="cmsy-10">&prime;</span>)<span 
+class="cmmi-10">&#x2215;</span>(<span 
+class="cmmi-10">r </span><span 
+class="cmsy-10">&minus; </span><span 
+class="cmmi-10">r</span><span 
+class="cmsy-10">&prime;</span>), using which we can compute <span 
+class="cmmi-10">s</span>. One way to ensure that <span 
+class="cmmi-10">x </span>is
+never reused for two different messages is to keep <span 
+class="cmmi-10">x </span>= <span 
+class="cmmi-10">f</span>(<span 
+class="cmmi-10">s,m</span>), where <span 
+class="cmmi-10">f </span>is a collision
+resistant hash function.
     
 </body></html> 
 
